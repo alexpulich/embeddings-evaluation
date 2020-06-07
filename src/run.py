@@ -50,21 +50,20 @@ def _process_work(evaluator, task, embeddings, f, results_dict):
     result = evaluator.evaluate(embeddings, dataset_data, filter_not_found=f)
     results_dict[task] = result
 
-    # TODO test for race condition and so on
-    # print(task)
-    # if not isinstance(evaluator._structured_source_strategy, NoStructuredSourceStrategy):
-    #     print(f"Best alpha: {result.get('coef')}")
-
 
 @click.command()
-@click.option("--oov", help='Strategy to handle OOV: letters or deepcut. If empty none of them is applied')
-@click.option("--ss", help='Integrating structed sources: wn1, wn2, cn1, cn2. '
-                           'If empty only word embeddings are evaluated')
+@click.option("--oov", help='Strategy to handle OOV: letters or deepcut. If empty none of them is applied',
+              type=click.Choice(CLI_OOV_OPTION.keys()))
+@click.option("--ss", help='Integrating structed sources. If empty only word embeddings are evaluated',
+              type=click.Choice(CLI_SS_OPTION.keys()))
 @click.option("-f", help='Filter not found words', is_flag=True)
 @click.option("-m", "--multiprocess", help='Using multiprocessing to parallel datasets evaluation', is_flag=True)
 @click.argument("model")
 @click.argument("format")
 def run(oov, ss, f, multiprocess, model, format):
+    """
+    Evaluation tool for Thai distributional models with option of integrating structured sources(WordNet, ConceptNet)
+    """
     OovStrategyCls = CLI_OOV_OPTION.get(oov, NoActionOOVStrategy)
     SSStrategyCls = CLI_SS_OPTION.get(ss, NoStructuredSourceStrategy)
 
@@ -97,7 +96,3 @@ def run(oov, ss, f, multiprocess, model, format):
 
 if __name__ == '__main__':
     run()
-
-description = 'Evaluation tool for Thai distributional models'
-'with option of integrating structured sources '
-'(WordNet, ConceptNet'

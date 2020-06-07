@@ -34,23 +34,26 @@ python run.py <path_to_model> <model_file_format>
 3. glove - **untested**
 4. dict - **untested**
 
-## Optional parameters
+## Usage
 ```
---oov - strategy to work with oov words
+Usage: run.py [OPTIONS] MODEL FORMAT
+
+  Evaluation tool for Thai distributional models with option of integrating
+  structured sources(WordNet, ConceptNet)
+
 Options:
-  deepcut - apply deepcut
-  letters - cut letter by letter until some words with such prefix are found in the vocabulary. Then take an average vector for words with such prefix.
+  --oov [deepcut|letters]  Strategy to handle OOV: letters or deepcut. If
+                           empty none of them is applied
 
---ss - structured sources using
-Options:
-  wn1 - using wordnet with method 1 from the paper
-  wn2 - using wordnet with method 2 from the paper
-  cn1 - usign conceptnet with method 1 from the paper
-  cn2 - usign conceptnet with method 2 from the paper
+  --ss [wn1|wn2|cn1|cn2]   Integrating structed sources. If empty only word
+                           embeddings are evaluated
 
--m/--multiprocess - flag of using multiprocessing to speed up evaluation
+  -f                       Filter not found words
+  -m, --multiprocess       Using multiprocessing to parallel datasets
+                           evaluation
 
--f - ignore not found words
+  --help                   Show this message and exit.
+
 ```
 
 # Notes
