@@ -11,12 +11,38 @@ from embeddings.embeddings import load_embedding
 from cli_config import CLI_OOV_OPTION, CLI_SS_OPTION
 
 
+def _create_latex_report(result, hm):
+    perc_oov_words = 100 * (
+            result['num_missing_words'] / (result['num_found_words'] + float(result['num_missing_words'])))
+
+    latex1 = '{:4.3f}~~{:4.3f}~~{:4.3f} & {:3.1f}~~{:3d}  & '.format(
+        round(result['spearmanr'], 3),
+        round(result['pearsonr'], 3),
+        hm,
+        perc_oov_words,
+        result['num_oov_word_pairs']
+    )
+
+    latex2 = '{:4.3f}~~{:4.3f}~~{:4.3f} & {:3.1f}~~{:3d}  & '.format(
+        round(result['spearmanr'], 3),
+        round(result['pearsonr'], 3),
+        hm,
+        perc_oov_words,
+        result['y.shape'][0]
+    )
+
+    return latex1, latex2
+
 def _process_work(evaluator, task, embeddings, f):
     dataset = DatasetLoader(task)
     dataset_data = dataset.get_data()
     result, hm = evaluator.evaluate(embeddings, dataset_data, filter_not_found=f)
+    latex1, latex2 = _create_latex_report(result, hm)
+
+    # TODO test for race condition and so on
     print(task)
-    print(result, hm)
+    print(latex1)
+    print(latex2)
 
 
 @click.command()

@@ -117,7 +117,7 @@ class ThaiEvaluator:
                   'num_found_words': found_words,
                   'num_missing_words': missing_words,
                   'num_oov_created': oov_vecs_created,
-                  'y.shape': y.shape
+                  'y.shape': y.shape,
                   }
 
         # TODO
