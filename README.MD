@@ -15,12 +15,12 @@ pip install -r requirements.txt
 # Running
 
 ## Before running
-Check config.py:
+1. Unzip models/models.zip into the models dir.
+2. Check config.py:
  
 - You can set WordNet strategy (WORDNET_PATH_SIMILARITY_TYPE)
 - You should set path to your numberbatch model file (NUMBERBATCH_PATH)
 - CONCEPTNET_PICKLE_FILE is required if you are using dict with ConceptNet scores saved from ConceptNet web API with pickle
-
 
 ## Running
 ```
