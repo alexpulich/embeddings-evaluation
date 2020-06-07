@@ -153,7 +153,6 @@ class ThaiEvaluator:
                     result['hm'] = -999  ## undefined
                 results.append(result)
             result = max(results, key=lambda x: x['hm'])
-            hm = result['hm']
             logger.debug('BEST COEF: {}'.format(result['coef']))
 
             # TODO

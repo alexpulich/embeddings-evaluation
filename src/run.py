@@ -6,8 +6,8 @@ from evaluation.evaluator import ThaiEvaluator
 from evaluation.strategies.oov_strategies import NoActionOOVStrategy
 from evaluation.strategies.base import NoStructuredSourceStrategy
 
-from datasets.datasets import DatasetLoader, tasks, DatasetEnum
-from embeddings.embeddings import load_embedding
+from datasets.datasets import DatasetLoader, tasks
+from embeddings.embeddings import load_embedding, Embedding
 from cli_config import CLI_OOV_OPTION, CLI_SS_OPTION
 
 
@@ -18,13 +18,13 @@ def _print_report(results_dict):
 
 
 def _print_latex_report(results_dict):
-    latex1, latex2 = '', ''
+    latex = ''
     for task in tasks:
         result = results_dict[task]
         perc_oov_words = 100 * (
                 result['num_missing_words'] / (result['num_found_words'] + float(result['num_missing_words'])))
 
-        latex1 += '{:4.3f}~~{:4.3f}~~{:4.3f} & {:3.1f}~~{:3d}  & '.format(
+        latex += '{:4.3f}~~{:4.3f}~~{:4.3f} & {:3.1f}~~{:3d}  & '.format(
             round(result['spearmanr'], 3),
             round(result['pearsonr'], 3),
             result['hm'],
@@ -32,19 +32,14 @@ def _print_latex_report(results_dict):
             result['num_oov_word_pairs']
         )
 
-        latex2 += '{:4.3f}~~{:4.3f}~~{:4.3f} & {:3.1f}~~{:3d}  & '.format(
-            round(result['spearmanr'], 3),
-            round(result['pearsonr'], 3),
-            result['hm'],
-            perc_oov_words,
-            result['y.shape'][0]
-        )
-
-    print(latex1)
-    print(latex2)
+    print(latex)
 
 
-def _process_work(evaluator, task, embeddings, f, results_dict):
+def _process_work(evaluator: ThaiEvaluator,
+                  task: str,
+                  embeddings: Embedding,
+                  f: bool,
+                  results_dict: dict):
     dataset = DatasetLoader(task)
     dataset_data = dataset.get_data()
     result = evaluator.evaluate(embeddings, dataset_data, filter_not_found=f)
@@ -95,4 +90,4 @@ def run(oov, ss, f, multiprocess, model, format):
 
 
 if __name__ == '__main__':
-    run()
+    run(['../../nlp/model.mc5.kv', 'word2vec', '--ss=cn2'])

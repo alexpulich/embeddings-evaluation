@@ -20,7 +20,7 @@ class ConceptNetMethod1Strategy(StructuredSourceStrategy):
     def apply(self, scores, pairs, structed_sources_coef):
         cn_scores, structed_oov_pairs = compute_conceptnet_path_scores(pairs, ConceptNetNumberbatch)
         cn_mean = np.mean(np.array([cn_score for cn_score in cn_scores if cn_score is not None]))
-        print("conceptnet_method: avg path similarity:", cn_mean)
+        logger.debug(f"conceptnet method 1: avg path similarity: {cn_mean}")
 
         new_scores = []
         for index, pair in enumerate(pairs):
@@ -45,7 +45,6 @@ class ConceptNetMethod2Strategy(StructuredSourceStrategy):
 
     def apply(self, scores, pairs, structed_sources_coef):
         cn_scores, structed_oov_pairs = compute_conceptnet_path_scores(pairs, ConceptNetNumberbatch)
-        print("using wordnet_method2")
 
         data = np.stack((scores, cn_scores), axis=1)
 

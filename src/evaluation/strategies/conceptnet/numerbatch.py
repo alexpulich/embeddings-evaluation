@@ -14,7 +14,7 @@ def load_if_needed(func):
                                    lower=False,
                                    clean_words=False,
                                    load_kwargs={})
-            return func(cls, *args, **kwargs)
+        return func(cls, *args, **kwargs)
 
     return wrapper
 
