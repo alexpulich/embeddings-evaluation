@@ -48,7 +48,7 @@ Options:
   cn1 - usign conceptnet with method 1 from the paper
   cn2 - usign conceptnet with method 2 from the paper
 
--f/--filter - ignore not found words
+-f - ignore not found words
 ```
 
 # Notes
