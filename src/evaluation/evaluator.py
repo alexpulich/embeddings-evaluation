@@ -158,4 +158,4 @@ class ThaiEvaluator:
 
             # TODO
             # logger.debug('STRUCTED OOV : {}'.format(result['structed_oov_pairs']))
-            return result, hm
+            return result

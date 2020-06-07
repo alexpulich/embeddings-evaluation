@@ -47,6 +47,6 @@ class DatasetLoader:
 tasks = (
     DatasetEnum.WORDSIM.value,
     DatasetEnum.SEMEVAL.value,
-    DatasetEnum.TWS.value,
     DatasetEnum.SIMLEX.value,
+    DatasetEnum.TWS.value,
 )
