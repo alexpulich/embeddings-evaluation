@@ -70,7 +70,7 @@ class ThaiEvaluator:
             index += 1
 
         word_pair_oov_indices = list(set(word_pair_oov_indices))
-        print('word_pair_oov_indices', word_pair_oov_indices)
+        logger.debug('word_pair_oov_indices', word_pair_oov_indices)
 
         if missing_words > 0 or oov_vecs_created > 0:
             logger.warning("Missing {} words. Will replace them with mean vector".format(missing_words))
@@ -79,21 +79,21 @@ class ThaiEvaluator:
                     oov_vecs_created))
             logger.warning("Found {} words.".format(found_words))
 
-        print('X.shape', X.shape)
-        print('y.shape', y.shape)
+        logger.debug('X.shape', X.shape)
+        logger.debug('y.shape', y.shape)
 
         if filter_not_found:
             new_X = np.delete(X, word_pair_oov_indices, 0)
             new_y = np.delete(y, word_pair_oov_indices)
 
-            print('new_X.shape', new_X.shape)
-            print('new_y.shape', new_y.shape)
+            logger.debug('new_X.shape', new_X.shape)
+            logger.debug('new_y.shape', new_y.shape)
 
             mean_vector = np.mean(embeddings.vectors, axis=0, keepdims=True)
             A = np.vstack(embeddings.get(word, mean_vector) for word in new_X[:, 0])
             B = np.vstack(embeddings.get(word, mean_vector) for word in new_X[:, 1])
-            print(len(A), len(B))
-            print(type(A), type(B))
+            logger.debug(len(A), len(B))
+            logger.debug(type(A), type(B))
             scores = np.array([v1.dot(v2.T) / (np.linalg.norm(v1) * np.linalg.norm(v2)) for v1, v2 in zip(A, B)])
 
             y = new_y
@@ -102,14 +102,14 @@ class ThaiEvaluator:
         else:
             mean_vector = np.mean(embeddings.vectors, axis=0, keepdims=True)
 
-            A = np.vstack(embeddings.get(word, mean_vector) for word in X[:, 0])
-            B = np.vstack(embeddings.get(word, mean_vector) for word in X[:, 1])
+            A = np.vstack([embeddings.get(word, mean_vector) for word in X[:, 0]])
+            B = np.vstack([embeddings.get(word, mean_vector) for word in X[:, 1]])
             scores = np.array([v1.dot(v2.T) / (np.linalg.norm(v1) * np.linalg.norm(v2)) for v1, v2 in zip(A, B)])
             pairs = X
 
         self._oov_strategy.handle_oov(embeddings, X, words)
 
-        self._structured_source_strategy.apply(scores, pairs, structured_source_coef)
+        scores = self._structured_source_strategy.apply(scores, pairs, structured_source_coef)
 
         result = {'spearmanr': scipy.stats.spearmanr(scores, y).correlation,
                   'pearsonr': scipy.stats.pearsonr(scores, y)[0],

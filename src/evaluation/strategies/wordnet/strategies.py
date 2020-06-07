@@ -6,6 +6,7 @@ from ..base import StructuredSourceStrategy
 from .utils import compute_wordnet_path_scores
 
 logger = logging.getLogger(__name__)
+print(__name__)
 
 
 class WordNetMethod1Strategy(StructuredSourceStrategy):

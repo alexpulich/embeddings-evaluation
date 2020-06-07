@@ -33,6 +33,7 @@ def _create_latex_report(result, hm):
 
     return latex1, latex2
 
+
 def _process_work(evaluator, task, embeddings, f):
     dataset = DatasetLoader(task)
     dataset_data = dataset.get_data()
@@ -41,6 +42,8 @@ def _process_work(evaluator, task, embeddings, f):
 
     # TODO test for race condition and so on
     print(task)
+    if not isinstance(evaluator._structured_source_strategy, NoStructuredSourceStrategy):
+        print(f"Best alpha: {result.get('coef')}")
     print(latex1)
     print(latex2)
 
@@ -63,14 +66,15 @@ def run(oov, ss, f, model, format):
         structured_source_strategy=SSStrategyCls(),
     )
 
-    processes = []
+    # processes = []
     for task in tasks:
-        process = Process(target=_process_work, args=(evaluator, task, embeddings, f))
-        processes.append(process)
-        process.start()
+        _process_work(evaluator, task, embeddings, f)
+        # process = Process(target=_process_work, args=(evaluator, task, embeddings, f))
+        # processes.append(process)
+        # process.start()
 
-    for process in processes:
-        process.join()
+    # for process in processes:
+        # process.join()
 
 
 if __name__ == '__main__':
