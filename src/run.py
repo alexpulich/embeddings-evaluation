@@ -12,9 +12,9 @@ from cli_config import CLI_OOV_OPTION, CLI_SS_OPTION
 
 
 def _print_report(results_dict):
-    for task, result in results_dict.items():
+    for task in tasks:
         print(f'Task {task}')
-        print(result)
+        print(results_dict[task])
 
 
 def _print_latex_report(results_dict):
@@ -90,4 +90,4 @@ def run(oov, ss, f, multiprocess, model, format):
 
 
 if __name__ == '__main__':
-    run(['../../nlp/model.mc5.kv', 'word2vec', '--ss=cn2'])
+    run()
