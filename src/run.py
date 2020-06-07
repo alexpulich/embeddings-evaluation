@@ -1,6 +1,7 @@
 from multiprocessing import Process
 
 import click
+import time
 
 from evaluation.evaluator import ThaiEvaluator
 from evaluation.strategies.oov_strategies import NoActionOOVStrategy
@@ -53,9 +54,10 @@ def _process_work(evaluator, task, embeddings, f):
 @click.option("--ss", help='Integrating structed sources: wn1, wn2, cn1, cn2. '
                            'If empty only word embeddings are evaluated')
 @click.option("-f", help='Filter not found words', is_flag=True)
+@click.option("-m", "--multiprocess", help='Using multiprocessing to parallel datasets evaluation', is_flag=True)
 @click.argument("model")
 @click.argument("format")
-def run(oov, ss, f, model, format):
+def run(oov, ss, f, multiprocess, model, format):
     OovStrategyCls = CLI_OOV_OPTION.get(oov, NoActionOOVStrategy)
     SSStrategyCls = CLI_SS_OPTION.get(ss, NoStructuredSourceStrategy)
 
@@ -66,15 +68,18 @@ def run(oov, ss, f, model, format):
         structured_source_strategy=SSStrategyCls(),
     )
 
-    # processes = []
-    for task in tasks:
-        _process_work(evaluator, task, embeddings, f)
-        # process = Process(target=_process_work, args=(evaluator, task, embeddings, f))
-        # processes.append(process)
-        # process.start()
+    if multiprocess:
+        processes = []
+        for task in tasks:
+            process = Process(target=_process_work, args=(evaluator, task, embeddings, f))
+            processes.append(process)
+            process.start()
 
-    # for process in processes:
-        # process.join()
+        for process in processes:
+            process.join()
+    else:
+        for task in tasks:
+            _process_work(evaluator, task, embeddings, f)
 
 
 if __name__ == '__main__':

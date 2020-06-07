@@ -48,6 +48,8 @@ Options:
   cn1 - usign conceptnet with method 1 from the paper
   cn2 - usign conceptnet with method 2 from the paper
 
+-m/--multiprocess - flag of using multiprocessing to speed up evaluation
+
 -f - ignore not found words
 ```
 
