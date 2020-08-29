@@ -111,6 +111,16 @@ class ThaiEvaluator:
 
         scores = self._structured_source_strategy.apply(scores, pairs, structured_source_coef)
 
+        # taking ranks for model (scores) and dataset (y)
+        scores_rank = scipy.stats.rankdata(scores).tolist()
+        y_rank = scipy.stats.rankdata(y).tolist()
+
+        # creating a list of abs(model_rank-dataset_rank)
+        diff_rank = [abs(sr - yr) for  sr, yr in zip(scores_rank, y_rank)]
+
+        word_pairs_with_ranks = zip(pairs.tolist(), diff_rank)
+        sorted_ranks = sorted(word_pairs_with_ranks, key=lambda x: x[1])
+
         result = {'spearmanr': scipy.stats.spearmanr(scores, y).correlation,
                   'pearsonr': scipy.stats.pearsonr(scores, y)[0],
                   'num_oov_word_pairs': len(word_pair_oov_indices),
@@ -118,6 +128,7 @@ class ThaiEvaluator:
                   'num_missing_words': missing_words,
                   'num_oov_created': oov_vecs_created,
                   'y.shape': y.shape,
+                  'sorted_ranks': sorted_ranks
                   }
 
         # TODO

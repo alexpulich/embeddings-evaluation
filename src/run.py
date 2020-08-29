@@ -1,6 +1,7 @@
 from multiprocessing import Manager, Process
 
 import click
+import csv
 
 from evaluation.evaluator import ThaiEvaluator
 from evaluation.strategies.oov_strategies import NoActionOOVStrategy
@@ -34,6 +35,16 @@ def _print_latex_report(results_dict):
 
     print(latex)
 
+def _save_ranks_diff(sorted_ranks, task):
+    with open(f'{task}_ranks.csv', 'w') as f:
+        writer = csv.writer(f)
+        for sorted_rank in sorted_ranks:
+            writer.writerow([
+                sorted_rank[0][0],
+                sorted_rank[0][1],
+                sorted_rank[1]
+            ])
+
 
 def _process_work(evaluator: ThaiEvaluator,
                   task: str,
@@ -43,6 +54,7 @@ def _process_work(evaluator: ThaiEvaluator,
     dataset = DatasetLoader(task)
     dataset_data = dataset.get_data()
     result = evaluator.evaluate(embeddings, dataset_data, filter_not_found=f)
+    _save_ranks_diff(result['sorted_ranks'], task)
     results_dict[task] = result
 
 
