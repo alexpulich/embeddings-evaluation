@@ -35,13 +35,23 @@ def _print_latex_report(results_dict):
 
     print(latex)
 
-def _save_ranks_diff(sorted_ranks, task):
+def _save_ranks_diff(scores_rank, y_rank, task):
+    word_pairs_with_ranks = {key: abs(scores_rank.get(key, 0) - y_rank.get(key, 0))
+              for key in set(scores_rank) | set(y_rank)}
+
+    sorted_ranks = sorted(word_pairs_with_ranks.items(), key=lambda kv: kv[1])
+
     with open(f'{task}_ranks.csv', 'w') as f:
         writer = csv.writer(f)
+        writer.writerow([
+            'word 1', 'word2', 'model rank', 'dataset_rank', 'abs difference'
+        ])
         for sorted_rank in sorted_ranks:
             writer.writerow([
                 sorted_rank[0][0],
                 sorted_rank[0][1],
+                scores_rank[sorted_rank[0]],
+                y_rank[sorted_rank[0]],
                 sorted_rank[1]
             ])
 
@@ -54,7 +64,7 @@ def _process_work(evaluator: ThaiEvaluator,
     dataset = DatasetLoader(task)
     dataset_data = dataset.get_data()
     result = evaluator.evaluate(embeddings, dataset_data, filter_not_found=f)
-    _save_ranks_diff(result['sorted_ranks'], task)
+    _save_ranks_diff(result['scores_rank'], result['y_rank'], task)
     results_dict[task] = result
 
 
